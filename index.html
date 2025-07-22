@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kids Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Fredoka', sans-serif;
+      background: linear-gradient(to bottom right, #d0f0ff, #ffffff);
+      text-align: center;
+      overflow-x: hidden;
+    }
+    .icon {
+      position: absolute;
+      font-size: 2.2em;
+      opacity: 0.25;
+      z-index: 0;
+    }
+    .icon1 { top: 5%; left: 10%; }
+    .icon2 { top: 15%; right: 8%; }
+    .icon3 { top: 35%; left: 5%; }
+    .icon4 { bottom: 15%; right: 10%; }
+    .icon5 { bottom: 5%; left: 15%; }
+    .icon6 { top: 60%; right: 5%; }
+    .icon7 { bottom: 25%; left: 30%; }
+    .icon8 { top: 45%; right: 30%; }
+
+    h1 {
+      font-size: 2.8em;
+      margin: 0.5em 0 0.2em 0;
+      position: relative;
+      z-index: 1;
+    }
+    h2 {
+      font-size: 2.2em;
+      margin-bottom: 0.5em;
+    }
+    #profiles, #taskList {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1em;
+      padding: 1em;
+      position: relative;
+      z-index: 1;
+    }
+    button {
+      width: 90%;
+      max-width: 400px;
+      padding: 1.4em;
+      font-size: 1.7em;
+      border: none;
+      border-radius: 16px;
+      background-color: #4fc3f7;
+      color: white;
+      box-shadow: 3px 3px 12px rgba(0,0,0,0.25);
+      transition: transform 0.2s, background-color 0.2s;
+      z-index: 1;
+    }
+    button:hover {
+      background-color: #0288d1;
+      transform: scale(1.05);
+      cursor: pointer;
+    }
+    #dashboard, #calendarView {
+      display: none;
+      margin-top: 1em;
+      position: relative;
+      z-index: 1;
+    }
+    #progressBar {
+      height: 36px;
+      background: gold;
+      width: 0%;
+      border-radius: 10px;
+      transition: width 1s ease-in-out;
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+      padding: 10px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .calendar-day {
+      background: #ffffff;
+      padding: 0.6em;
+      border-radius: 10px;
+      min-height: 100px;
+      box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      font-size: 1em;
+      overflow-y: auto;
+    }
+    .calendar-day strong {
+      font-size: 1.2em;
+    }
+    .calendar-day span {
+      display: block;
+      font-size: 0.9em;
+      margin-top: 0.2em;
+      word-wrap: break-word;
+    }
+    ul#taskList {
+      list-style: none;
+      padding: 0;
+      width: 100%;
+    }
+    ul#taskList li {
+      margin-bottom: 10px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="icon icon1">👦</div>
+  <div class="icon icon2">🐶</div>
+  <div class="icon icon3">🎨</div>
+  <div class="icon icon4">📚</div>
+  <div class="icon icon5">🍎</div>
+  <div class="icon icon6">🚲</div>
+  <div class="icon icon7">🧃</div>
+  <div class="icon icon8">🎵</div>
+
+  <h1>🎓 Kids Dashboard</h1>
+
+  <div id="profiles">
+    <button onclick="loadDashboard('Connor')">Connor</button>
+    <button onclick="loadDashboard('Zoe')">Zoe</button>
+    <button onclick="loadDashboard('Quinn')">Quinn</button>
+    <button onclick="loadDashboard('Jasper')">Jasper</button>
+  </div>
+
+  <div id="dashboard">
+    <h2 id="childName"></h2>
+    <div id="xpDisplay">XP: 0</div>
+    <div style="width: 90%; margin: auto; background: #ddd; border-radius: 10px;"><div id="progressBar"></div></div>
+    <div id="badgeDisplay" style="margin-top: 10px;">🏅 Badge: None</div>
+    <ul id="taskList"></ul>
+    <button onclick="cashOut()">💸 Cash Out</button>
+    <button onclick="showCalendar()">📅 View Calendar</button>
+    <button onclick="goBack()">🔙 Back</button>
+  </div>
+
+  <div id="calendarView">
+    <h2>📅 Calendar</h2>
+    <div id="calendarGrid" class="calendar-grid"></div>
+    <button onclick="hideCalendar()">🔙 Back to Dashboard</button>
+  </div>
+
+  <script>
+    const childScripts = {
+      Connor: "https://script.google.com/macros/s/AKfycbxvD4f_GxBlKufrKaKhW0QkigcZVatkeZjhwFSfb_lvXcFittO-RRtXNuBcDaS7sZAX/exec",
+      Zoe: "https://script.google.com/macros/s/AKfycbx_S8e_TqItuUqIcIZeDBeVrmsINPeRrYAYtP2cCKBmR62IoDyweN_vJ39ZoiosRE4/exec",
+      Quinn: "https://script.google.com/macros/s/AKfycbxIIMnYlO3pTu35UbMOAsXoNbHOXEa96PqYm5FiTzuSGw73-YIkxukqMkE78kRdXlI/exec",
+      Jasper: "https://script.google.com/macros/s/AKfycbxoSEpniq8sSL3W1eTirRPrplNEjHdgwUJmbS0EfYgVVdn9pKVlcnCTGQxSn64ZuuI/exec"
+    };
+
+    let currentChild = "";
+    let xp = 0;
+
+    function loadDashboard(name) {
+      currentChild = name;
+      document.getElementById("profiles").style.display = "none";
+      document.getElementById("dashboard").style.display = "block";
+      document.getElementById("childName").innerText = `🎉 Welcome, ${name}!`;
+      updateXP();
+      buildTasks();
+    }
+
+    function buildTasks() {
+      const tasks = ["🪥 Brush Teeth", "🛏️ Make Bed", "🐶 Feed Dog", "📚 Read", "🧹 Help Out"];
+      const list = document.getElementById("taskList");
+      list.innerHTML = "";
+      tasks.forEach(task => {
+        const li = document.createElement("li");
+        const btn = document.createElement("button");
+        btn.innerText = task;
+        btn.onclick = () => {
+          xp += 5;
+          updateXP();
+        };
+        li.appendChild(btn);
+        list.appendChild(li);
+      });
+    }
+
+    function updateXP() {
+      document.getElementById("xpDisplay").innerText = `⭐ XP: ${xp}`;
+      document.getElementById("progressBar").style.width = `${Math.min((xp % 50) * 2, 100)}%`;
+      document.getElementById("badgeDisplay").innerText = xp >= 200 ? "🏅 Badge: 🥇 Gold" :
+                                                          xp >= 100 ? "🏅 Badge: 🥈 Silver" :
+                                                          xp >= 50 ? "🏅 Badge: 🥉 Bronze" : "🏅 Badge: None";
+    }
+
+    function cashOut() {
+      xp = 0;
+      updateXP();
+    }
+
+    function goBack() {
+      document.getElementById("profiles").style.display = "flex";
+      document.getElementById("dashboard").style.display = "none";
+      document.getElementById("calendarView").style.display = "none";
+    }
+
+    function showCalendar() {
+      document.getElementById("dashboard").style.display = "none";
+      document.getElementById("calendarView").style.display = "block";
+      buildCalendar();
+    }
+
+    function hideCalendar() {
+      document.getElementById("calendarView").style.display = "none";
+      document.getElementById("dashboard").style.display = "block";
+    }
+
+    function getUniformIcon(note) {
+      const n = note.toLowerCase();
+      if (n.includes("phe") || n.includes("gym")) return "🏃‍♂️";
+      if (n.includes("formal") || n.includes("uniform")) return "🎓";
+      return "";
+    }
+
+    function buildCalendar() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const grid = document.getElementById("calendarGrid");
+      grid.innerHTML = "";
+      const firstDay = new Date(year, month, 1).getDay();
+      const offset = firstDay === 0 ? 6 : firstDay - 1; // Align Monday start
+
+      for (let i = 0; i < offset; i++) {
+        const filler = document.createElement("div");
+        filler.className = "calendar-day";
+        grid.appendChild(filler);
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const div = document.createElement("div");
+        const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+        div.className = "calendar-day";
+        div.innerHTML = `<strong>${day}</strong>`;
+        grid.appendChild(div);
+        fetch(`${childScripts[currentChild]}?request=calendarData&date=${dateStr}`)
+          .then(res => res.json())
+          .then(data => {
+            const notes = data.notes || (data.note ? [data.note] : []);
+            notes.forEach(note => {
+              const icon = getUniformIcon(note);
+              const span = document.createElement("span");
+              span.innerText = `${icon} ${note}`;
+              div.appendChild(span);
+            });
+          });
+      }
+    }
+
+    setInterval(() => {
+      location.reload();
+    }, 300000);
+  </script>
+</body>
+</html>
