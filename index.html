@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kids Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'Fredoka', sans-serif;
+      background: linear-gradient(to bottom right, #d0f0ff, #ffffff);
+      text-align: center;
+      overflow-x: hidden;
+    }
+    .icon {
+      position: absolute;
+      font-size: 2.2em;
+      opacity: 0.25;
+      z-index: 0;
+    }
+    .icon1 { top: 5%; left: 10%; }
+    .icon2 { top: 15%; right: 8%; }
+    .icon3 { top: 35%; left: 5%; }
+    .icon4 { bottom: 15%; right: 10%; }
+    .icon5 { bottom: 5%; left: 15%; }
+    .icon6 { top: 60%; right: 5%; }
+    .icon7 { bottom: 25%; left: 30%; }
+    .icon8 { top: 45%; right: 30%; }
+
+    h1 {
+      font-size: 2.8em;
+      margin: 0.5em 0 0.2em 0;
+      position: relative;
+      z-index: 1;
+    }
+    h2 {
+      font-size: 2.2em;
+      margin-bottom: 0.5em;
+    }
+    #profiles, #taskList {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1em;
+      padding: 1em;
+      position: relative;
+      z-index: 1;
+    }
+    button {
+      width: 90%;
+      max-width: 400px;
+      padding: 1.4em;
+      font-size: 1.7em;
+      border: none;
+      border-radius: 16px;
+      background-color: #4fc3f7;
+      color: white;
+      box-shadow: 3px 3px 12px rgba(0,0,0,0.25);
+      transition: transform 0.2s, background-color 0.2s;
+      z-index: 1;
+    }
+    button:hover {
+      background-color: #0288d1;
+      transform: scale(1.05);
+      cursor: pointer;
+    }
+    #dashboard, #calendarView {
+      display: none;
+      margin-top: 1em;
+      position: relative;
+      z-index: 1;
+    }
+    #progressBar {
+      height: 36px;
+      background: gold;
+      width: 0%;
+      border-radius: 10px;
+      transition: width 1s ease-in-out;
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding: 0.5em;
+      height: 100%;
+      box-sizing: border-box;
+    }
+    .calendar-day {
+      background: #ffffff;
+      padding: 0.6em;
+      border-radius: 10px;
+      min-height: 120px;
+      box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      font-size: 1em;
+      overflow-y: auto;
+    }
+    .calendar-day span {
+      display: block;
+      font-size: 0.9em;
+      margin-top: 0.2em;
+    }
+    ul#taskList {
+      list-style: none;
+      padding: 0;
+      width: 100%;
+    }
+    ul#taskList li {
+      margin-bottom: 10px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <!-- Decorative icons scattered -->
+  <div class="icon icon1">👦</div>
+  <div class="icon icon2">🐶</div>
+  <div class="icon icon3">🎨</div>
+  <div class="icon icon4">📚</div>
+  <div class="icon icon5">🍎</div>
+  <div class="icon icon6">🚲</div>
+  <div class="icon icon7">🧃</div>
+  <div class="icon icon8">🎵</div>
+
+  <h1>🎓 Kids Dashboard</h1>
+
+  <div id="profiles">
+    <button onclick="loadDashboard('Connor')">Connor</button>
+    <button onclick="loadDashboard('Zoe')">Zoe</button>
+    <button onclick="loadDashboard('Quinn')">Quinn</button>
+    <button onclick="loadDashboard('Jasper')">Jasper</button>
+  </div>
+
+</body>
+</html>
